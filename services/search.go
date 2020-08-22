@@ -1,4 +1,4 @@
-package writers
+package services
 
 import (
 	"context"
@@ -7,11 +7,6 @@ import (
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/olivere/elastic/v7"
 )
-
-// ElasticTweetWriter writes tweets to ElasticSearch
-type ElasticTweetWriter struct {
-	Client *elastic.Client
-}
 
 type jsonTweet struct {
 	Username string    `json:"screenname"`
@@ -23,7 +18,14 @@ type jsonTweet struct {
 	Location string    `json:"location,omitempty"`
 }
 
-func (writer *ElasticTweetWriter) Write(tweet *twitter.Tweet) error {
+// ElasticsearchTweetIndexer adds a tweet to an elasticsearch index
+type ElasticsearchTweetIndexer struct {
+	Client    *elastic.Client
+	IndexName string
+}
+
+// Index adds the tweet to the search index
+func (indexer *ElasticsearchTweetIndexer) Index(tweet *twitter.Tweet) error {
 	ctx := context.Background()
 	time, _ := time.Parse("Mon Jan 2 15:04:05 -0700 2006", tweet.CreatedAt)
 	tags := []string{}
@@ -44,8 +46,8 @@ func (writer *ElasticTweetWriter) Write(tweet *twitter.Tweet) error {
 		tweetJSON.Image = tweet.Entities.Media[0].MediaURL
 	}
 
-	_, err := writer.Client.Index().
-		Index("twitter").
+	_, err := indexer.Client.Index().
+		Index(indexer.IndexName).
 		Id(tweet.IDStr).
 		BodyJson(tweetJSON).
 		Do(ctx)

@@ -30,7 +30,7 @@ func (collection *MockCollection) InsertOne(
 	return args.Get(0).(*mongo.InsertOneResult), args.Error(1)
 }
 
-func setupMocks(result *mongo.InsertOneResult, err error) (writers.MongoTweetWriter, *twitter.Tweet) {
+func setupMongoTest(result *mongo.InsertOneResult, err error) (writers.MongoTweetWriter, *twitter.Tweet) {
 	collection := new(MockCollection)
 	collection.On("InsertOne", mock.Anything, mock.Anything, mock.Anything).
 		Return(result, err)
@@ -40,14 +40,14 @@ func setupMocks(result *mongo.InsertOneResult, err error) (writers.MongoTweetWri
 }
 
 func TestMongoWriter_Success_ReturnsNilError(t *testing.T) {
-	writer, tweet := setupMocks(&mongo.InsertOneResult{InsertedID: primitive.ObjectID{1}}, nil)
+	writer, tweet := setupMongoTest(&mongo.InsertOneResult{InsertedID: primitive.ObjectID{1}}, nil)
 	err := writer.Write(tweet)
 	assert.Nil(t, err)
 }
 
 func TestMongoWriter_Error_ReturnsError(t *testing.T) {
 	errorMessage := "Mock error"
-	writer, tweet := setupMocks(&mongo.InsertOneResult{InsertedID: nil}, errors.New(errorMessage))
+	writer, tweet := setupMongoTest(&mongo.InsertOneResult{InsertedID: nil}, errors.New(errorMessage))
 	err := writer.Write(tweet)
 	assert.Equal(t, err.Error(), errorMessage)
 }

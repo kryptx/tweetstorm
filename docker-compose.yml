@@ -1,0 +1,66 @@
+version: '3'
+services:
+  tweetstorm:
+    ports:
+      - "3000:3000"
+    build: .
+    depends_on:
+      - "es01"
+      - "es02"
+      - "es03"
+      - "mongo"
+
+  mongo:
+    image: "mongo:3"
+    ports:
+      - "27017:27017"
+
+  cerebro:
+    image: "lmenezes/cerebro:latest"
+    ports:
+      - "9000:9000"
+
+  es01:
+    image: elasticsearch:7.9.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+  es02:
+    image: elasticsearch:7.9.0
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  es03:
+    image: elasticsearch:7.9.0
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1

@@ -1,0 +1,18 @@
+config:
+  twitter:
+    auth:
+      APIKey: ${TWITTER_API_KEY:missing_api_key}
+      APISecret: ${TWITTER_API_SECRET:missing_api_secret}
+      # twitterBearerToken: ${TWITTER_BEARER_TOKEN:missing_bearer_token}
+      accessToken: ${TWITTER_ACCESS_TOKEN:missing_access_token}
+      accessTokenSecret: ${TWITTER_ACCESS_TOKEN_SECRET:missing_access_token_secret}
+    filterTerms:
+      - trump
+      - biden
+  mongodb:
+    URI: mongodb://mongo:27017
+    database: tweetstorm
+    collection: tweets
+  elasticsearch:
+    URI: http://es01:9200
+    index: twitter

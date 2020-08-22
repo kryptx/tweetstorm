@@ -1,0 +1,35 @@
+{
+	"settings":{
+		"number_of_shards": 2,
+		"number_of_replicas": 1
+	},
+	"mappings":{
+		"properties":{
+			"screenname":{
+				"type":"keyword"
+			},
+			"realname":{
+				"type":"text",
+				"store": true,
+				"fielddata": true
+			},
+			"message":{
+				"type":"text",
+				"store": true,
+				"fielddata": true
+			},
+			"image":{
+				"type":"text"
+			},
+			"created":{
+				"type":"date"
+			},
+			"hashtags":{
+				"type":"keyword"
+			},
+			"location":{
+				"type":"text"
+			}
+		}
+	}
+}

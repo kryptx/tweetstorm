@@ -13,7 +13,7 @@ import (
 
 // TweetWriter is a type that receives tweets
 type TweetWriter interface {
-	Write(*twit.Tweet) error
+	Write(*twit.Tweet) <-chan error
 }
 
 // StreamTweets streams tweets and writes them to the provided TweetWriter
@@ -22,7 +22,7 @@ func StreamTweets(filterTerms []string, httpClient *http.Client, writers []Tweet
 	demux := twit.NewSwitchDemux()
 	demux.Tweet = func(tweet *twit.Tweet) {
 		for _, writer := range writers {
-			err := writer.Write(tweet)
+			err := <-writer.Write(tweet)
 			if err != nil {
 				log.Output(0, err.Error())
 			}

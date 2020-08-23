@@ -14,7 +14,10 @@ type SearchIndexer interface {
 	Index(tweet *twitter.Tweet) error
 }
 
-func (writer *IndexTweetWriter) Write(tweet *twitter.Tweet) error {
-	err := writer.Indexer.Index(tweet)
-	return err
+func (writer *IndexTweetWriter) Write(tweet *twitter.Tweet) <-chan error {
+	result := make(chan error)
+	go func() {
+		result <- writer.Indexer.Index(tweet)
+	}()
+	return result
 }

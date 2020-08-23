@@ -17,7 +17,8 @@ func main() {
 		&writers.MongoTweetWriter{Collection: mongoCollection},
 		&writers.IndexTweetWriter{
 			Indexer: &services.ElasticsearchTweetIndexer{
-				Client: elasticClient,
+				Client:    elasticClient,
+				IndexName: c.ElasticSearch.Index,
 			},
 		},
 	}

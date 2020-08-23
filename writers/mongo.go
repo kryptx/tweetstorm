@@ -18,7 +18,11 @@ type WritableMongoCollection interface {
 	InsertOne(context.Context, interface{}, ...*options.InsertOneOptions) (*mongo.InsertOneResult, error)
 }
 
-func (writer *MongoTweetWriter) Write(tweet *twitter.Tweet) error {
-	_, err := writer.Collection.InsertOne(context.TODO(), tweet)
-	return err
+func (writer *MongoTweetWriter) Write(tweet *twitter.Tweet) <-chan error {
+	result := make(chan error)
+	go func() {
+		_, err := writer.Collection.InsertOne(context.TODO(), tweet)
+		result <- err
+	}()
+	return result
 }

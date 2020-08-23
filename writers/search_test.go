@@ -29,13 +29,13 @@ func setupSearchTest(err error) (writers.IndexTweetWriter, *twitter.Tweet) {
 
 func TestIndexWriter_Success_ReturnsNilError(t *testing.T) {
 	writer, tweet := setupSearchTest(nil)
-	err := writer.Write(tweet)
+	err := <-writer.Write(tweet)
 	assert.Nil(t, err)
 }
 
 func TestIndexWriter_Error_ReturnsError(t *testing.T) {
 	errorMessage := "Mock error"
 	writer, tweet := setupSearchTest(errors.New(errorMessage))
-	err := writer.Write(tweet)
+	err := <-writer.Write(tweet)
 	assert.Equal(t, err.Error(), errorMessage)
 }

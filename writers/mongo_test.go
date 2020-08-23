@@ -41,13 +41,13 @@ func setupMongoTest(result *mongo.InsertOneResult, err error) (writers.MongoTwee
 
 func TestMongoWriter_Success_ReturnsNilError(t *testing.T) {
 	writer, tweet := setupMongoTest(&mongo.InsertOneResult{InsertedID: primitive.ObjectID{1}}, nil)
-	err := writer.Write(tweet)
+	err := <-writer.Write(tweet)
 	assert.Nil(t, err)
 }
 
 func TestMongoWriter_Error_ReturnsError(t *testing.T) {
 	errorMessage := "Mock error"
 	writer, tweet := setupMongoTest(&mongo.InsertOneResult{InsertedID: nil}, errors.New(errorMessage))
-	err := writer.Write(tweet)
+	err := <-writer.Write(tweet)
 	assert.Equal(t, err.Error(), errorMessage)
 }

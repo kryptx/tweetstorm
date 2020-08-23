@@ -21,8 +21,12 @@ func StreamTweets(filterTerms []string, httpClient *http.Client, writers []Tweet
 	client := twit.NewClient(httpClient)
 	demux := twit.NewSwitchDemux()
 	demux.Tweet = func(tweet *twit.Tweet) {
+		var errs []<-chan error
 		for _, writer := range writers {
-			err := <-writer.Write(tweet)
+			errs = append(errs, writer.Write(tweet))
+		}
+		for _, ch := range errs {
+			err := <-ch
 			if err != nil {
 				log.Output(0, err.Error())
 			}

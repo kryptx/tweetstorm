@@ -6,11 +6,11 @@ import (
 
 // IndexTweetWriter writes tweets to a search index
 type IndexTweetWriter struct {
-	Indexer SearchIndexer
+	Indexer TweetIndexer
 }
 
-// SearchIndexer is the interface that is consumed by the writer
-type SearchIndexer interface {
+// TweetIndexer is the interface that is consumed by the writer
+type TweetIndexer interface {
 	Index(tweet *twitter.Tweet) <-chan error
 }
 

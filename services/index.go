@@ -20,8 +20,13 @@ type jsonTweet struct {
 
 // ElasticsearchTweetIndexer adds a tweet to an elasticsearch index
 type ElasticsearchTweetIndexer struct {
-	Client    *elastic.Client
-	IndexName string
+	GetJSONIndexer func(body interface{}, itemId string) ElasticsearchJSONIndexer
+}
+
+// ElasticsearchJSONIndexer indexes a JSON object in Elasticsearch
+// it is implemented by the elastic client's IndexService type
+type ElasticsearchJSONIndexer interface {
+	Do(context.Context) (*elastic.IndexResponse, error)
 }
 
 // Index adds the tweet to the search index
@@ -45,17 +50,9 @@ func (indexer *ElasticsearchTweetIndexer) Index(tweet *twitter.Tweet) <-chan err
 		tweetJSON.Image = tweet.Entities.Media[0].MediaURL
 	}
 
-	return indexJSONObject(tweetJSON, indexer.IndexName, tweet.IDStr, indexer.Client)
-}
-
-func indexJSONObject(obj interface{}, index string, id string, client *elastic.Client) <-chan error {
 	result := make(chan error)
 	go func() {
-		_, err := client.Index().
-			Index(index).
-			Id(id).
-			BodyJson(obj).
-			Do(context.Background())
+		_, err := indexer.GetJSONIndexer(tweetJSON, tweet.IDStr).Do(context.Background())
 		result <- err
 	}()
 

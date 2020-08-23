@@ -13,12 +13,14 @@ func main() {
 	c := config.Load("config.yml")
 	mongoCollection := db.GetMongoCollection(c.Mongo)
 	elasticClient := db.GetElasticClient(c.ElasticSearch)
+	getJSONIndexer := func(body interface{}, id string) services.ElasticsearchJSONIndexer {
+		return elasticClient.Index().Index(c.ElasticSearch.Index).Id(id).BodyJson(body)
+	}
 	tweetWriters := []twitter.TweetWriter{
 		&writers.MongoTweetWriter{Collection: mongoCollection},
 		&writers.IndexTweetWriter{
 			Indexer: &services.ElasticsearchTweetIndexer{
-				Client:    elasticClient,
-				IndexName: c.ElasticSearch.Index,
+				GetJSONIndexer: getJSONIndexer,
 			},
 		},
 	}

@@ -14,9 +14,13 @@ type MockIndexer struct {
 	mock.Mock
 }
 
-func (indexer *MockIndexer) Index(tweet *twitter.Tweet) error {
+func (indexer *MockIndexer) Index(tweet *twitter.Tweet) <-chan error {
+	result := make(chan error)
 	args := indexer.Called(tweet)
-	return args.Error(0)
+	go func() {
+		result <- args.Error(0)
+	}()
+	return result
 }
 
 func setupSearchTest(err error) (writers.IndexTweetWriter, *twitter.Tweet) {

@@ -25,7 +25,7 @@ type ElasticsearchTweetIndexer struct {
 }
 
 // Index adds the tweet to the search index
-func (indexer *ElasticsearchTweetIndexer) Index(tweet *twitter.Tweet) error {
+func (indexer *ElasticsearchTweetIndexer) Index(tweet *twitter.Tweet) <-chan error {
 	time, _ := time.Parse("Mon Jan 2 15:04:05 -0700 2006", tweet.CreatedAt)
 	tags := []string{}
 	for _, tag := range tweet.Entities.Hashtags {
@@ -48,12 +48,16 @@ func (indexer *ElasticsearchTweetIndexer) Index(tweet *twitter.Tweet) error {
 	return indexJSONObject(tweetJSON, indexer.IndexName, tweet.IDStr, indexer.Client)
 }
 
-func indexJSONObject(obj interface{}, index string, id string, client *elastic.Client) error {
-	_, err := client.Index().
-		Index(index).
-		Id(id).
-		BodyJson(obj).
-		Do(context.Background())
+func indexJSONObject(obj interface{}, index string, id string, client *elastic.Client) <-chan error {
+	result := make(chan error)
+	go func() {
+		_, err := client.Index().
+			Index(index).
+			Id(id).
+			BodyJson(obj).
+			Do(context.Background())
+		result <- err
+	}()
 
-	return err
+	return result
 }

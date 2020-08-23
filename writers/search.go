@@ -11,13 +11,9 @@ type IndexTweetWriter struct {
 
 // SearchIndexer is the interface that is consumed by the writer
 type SearchIndexer interface {
-	Index(tweet *twitter.Tweet) error
+	Index(tweet *twitter.Tweet) <-chan error
 }
 
 func (writer *IndexTweetWriter) Write(tweet *twitter.Tweet) <-chan error {
-	result := make(chan error)
-	go func() {
-		result <- writer.Indexer.Index(tweet)
-	}()
-	return result
+	return writer.Indexer.Index(tweet)
 }

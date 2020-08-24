@@ -95,24 +95,28 @@ func setupIndexerTest(response *elastic.IndexResponse, err error) (*writers.Twee
 	return &writers.TweetJSONIndexer{factory}, jsonIndexer, tweet
 }
 
-func TestIndex_Success_PassesJSONObject(t *testing.T) {
-	response := &elastic.IndexResponse{}
-	indexer, jsonIndexer, tweet := setupIndexerTest(response, nil)
-
-	indexErr := <-indexer.Index(tweet)
-	assert.Nil(t, indexErr)
-	assert.Equal(t, 1, len(jsonIndexer.Calls))
-	mockFactory := indexer.Factory.(*MockJSONIndexerFactory)
-	assert.Equal(t, 1, len(mockFactory.Calls))
-	jsonObj := mockFactory.Calls[0].Arguments[0]
-	json, jsonErr := json.Marshal(jsonObj)
-	assert.Nil(t, jsonErr)
-	assert.Contains(t, string(json), "\"I just wrote a test!\"")
-}
-
 func TestIndex_Error_ReturnsErrInChannel(t *testing.T) {
 	err := errors.New("test error")
 	indexer, _, tweet := setupIndexerTest(nil, err)
 	indexErr := <-indexer.Index(tweet)
 	assert.Equal(t, err, indexErr)
+}
+
+func TestIndex_Success_PassesCorrectArguments(t *testing.T) {
+	response := &elastic.IndexResponse{}
+	indexer, jsonIndexer, tweet := setupIndexerTest(response, nil)
+
+	_ = <-indexer.Index(tweet)
+	assert.Equal(t, 1, len(jsonIndexer.Calls))
+
+	mockFactory := indexer.Factory.(*MockJSONIndexerFactory)
+	assert.Equal(t, 1, len(mockFactory.Calls))
+
+	id := mockFactory.Calls[0].Arguments[1].(string)
+	assert.Equal(t, "12345678", id)
+
+	jsonObj := mockFactory.Calls[0].Arguments[0]
+	json, jsonErr := json.Marshal(jsonObj)
+	assert.Nil(t, jsonErr)
+	assert.Contains(t, string(json), "\"I just wrote a test!\"")
 }

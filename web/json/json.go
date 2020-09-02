@@ -10,7 +10,7 @@ import (
 type Writer struct{}
 
 // WriteJSON sends the application/json header and writes the body as JSON
-func (writer *Writer) Write(w http.ResponseWriter, statusCode int, body interface{}) {
+func (writer *Writer) WriteJSON(w http.ResponseWriter, statusCode int, body interface{}) {
 	w.Header().Add("Content-type", "application/json")
 	buf := new(bytes.Buffer)
 	err := json.NewEncoder(buf).Encode(body)

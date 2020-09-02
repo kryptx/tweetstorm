@@ -13,10 +13,6 @@ type elasticsearchStatus struct {
 	ActiveShards int    `json:"active_shards"`
 }
 
-/******************************
- * MONGO STATUS RETRIEVER
- **/
-
 // ElasticsearchRetriever implements StatusRetriever for Elasticsearch
 type ElasticsearchRetriever struct {
 	Client *elastic.Client

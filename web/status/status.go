@@ -6,13 +6,6 @@ import (
 	"github.com/kryptx/tweetstorm/web/json"
 )
 
-// indexStatus represents some data about an index
-type indexStatus struct {
-	Status       string `json:"status"`
-	ActiveShards int    `json:"active_shards"`
-	Replicas     int    `json:"replicas"`
-}
-
 /******************************
  * STATUS HTTP RESPONDER
  **/

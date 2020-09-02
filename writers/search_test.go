@@ -113,7 +113,7 @@ func TestIndex_Success_PassesCorrectArguments(t *testing.T) {
 	assert.Equal(t, 1, len(mockFactory.Calls))
 
 	id := mockFactory.Calls[0].Arguments[1].(string)
-	assert.Equal(t, "12345678", id)
+	assert.Equal(t, tweet.IDStr, id)
 
 	jsonObj := mockFactory.Calls[0].Arguments[0]
 	json, jsonErr := json.Marshal(jsonObj)

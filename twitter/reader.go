@@ -11,7 +11,7 @@ import (
 	twit "github.com/dghubble/go-twitter/twitter"
 )
 
-// TweetWriter is a type that receives tweets
+// TweetWriter is a type that receives tweets and writes them somewhere
 type TweetWriter interface {
 	Write(*twit.Tweet) <-chan error
 }

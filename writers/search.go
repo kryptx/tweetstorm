@@ -14,11 +14,17 @@ const twitterTimeFormat = "Mon Jan 2 15:04:05 -0700 2006"
  * High-level abstraction: writing tweets to a search index
  */
 
+// TweetIndexer indexes tweets in a search index
+type TweetIndexer interface {
+	Index(tweet *twitter.Tweet) <-chan error
+}
+
 // IndexTweetWriter writes tweets to a search index
 type IndexTweetWriter struct {
 	Indexer TweetIndexer
 }
 
+// Write implements TweetWriter interface
 func (writer *IndexTweetWriter) Write(tweet *twitter.Tweet) <-chan error {
 	return writer.Indexer.Index(tweet)
 }
@@ -26,16 +32,6 @@ func (writer *IndexTweetWriter) Write(tweet *twitter.Tweet) <-chan error {
 /**
  * Mid-level abstraction: writing JSON to a search index
  */
-
-type jsonTweet struct {
-	Username string    `json:"screenname"`
-	Realname string    `json:"realname"`
-	Text     string    `json:"message"`
-	Image    string    `json:"image,omitempty"`
-	Created  time.Time `json:"created,omitempty"`
-	Hashtags []string  `json:"hashtags,omitempty"`
-	Location string    `json:"location,omitempty"`
-}
 
 // JSONIndexer indexes a JSON object in a search index
 // it is implemented by the elastic client's IndexService type
@@ -48,9 +44,14 @@ type JSONIndexerFactory interface {
 	CreateJSONIndexer(body interface{}, id string) JSONIndexer
 }
 
-// TweetIndexer indexes tweets in a search index
-type TweetIndexer interface {
-	Index(tweet *twitter.Tweet) <-chan error
+type jsonTweet struct {
+	Username string    `json:"screenname"`
+	Realname string    `json:"realname"`
+	Text     string    `json:"message"`
+	Image    string    `json:"image,omitempty"`
+	Created  time.Time `json:"created,omitempty"`
+	Hashtags []string  `json:"hashtags,omitempty"`
+	Location string    `json:"location,omitempty"`
 }
 
 // TweetJSONIndexer indexes tweets using JSON

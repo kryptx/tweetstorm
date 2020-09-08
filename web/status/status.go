@@ -6,10 +6,6 @@ import (
 	"github.com/kryptx/tweetstorm/web/json"
 )
 
-/******************************
- * STATUS HTTP RESPONDER
- **/
-
 // Retriever is an interface for asynchronous retrieval of status data from an external service or app
 type Retriever interface {
 	Retrieve(chan<- interface{})

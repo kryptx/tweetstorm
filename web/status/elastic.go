@@ -13,7 +13,7 @@ type elasticsearchStatus struct {
 	ActiveShards int    `json:"active_shards"`
 }
 
-// ElasticsearchRetriever implements StatusRetriever for Elasticsearch
+// ElasticsearchRetriever implements status.Retriever for Elasticsearch
 type ElasticsearchRetriever struct {
 	Client *elastic.Client
 }

@@ -12,23 +12,20 @@ import (
 
 // TweetResult represents a result from mongodb about a tweet
 type TweetResult struct {
-	Image   TweetEntities `bson:"entities"`
-	User    TweetUser     `bson:"user"`
+	Image   tweetEntities `bson:"entities"`
+	User    tweetUser     `bson:"user"`
 	TweetID string        `bson:"idstr"`
 }
 
-// TweetUser contains data about a user that posted a tweet
-type TweetUser struct {
+type tweetUser struct {
 	ScreenName string `bson:"screenname"`
 }
 
-// TweetEntities contains entities associated with a tweet
-type TweetEntities struct {
-	Media []TweetMedia `bson:"media"`
+type tweetEntities struct {
+	Media []tweetMedia `bson:"media"`
 }
 
-// TweetMedia contains data about media entities from a tweet
-type TweetMedia struct {
+type tweetMedia struct {
 	URL string `bson:"mediaurl"`
 }
 

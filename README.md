@@ -2,7 +2,7 @@
 A service that indexes tweets
 
 # Running the app
-1. Install docker
+1. Install Docker with Compose, according to the [instructions](https://docs.docker.com/compose/install/) for your operating system.
 1. Update configuration as desired in `config.yml` - e.g., select terms to send to filter API
 1. Set up a `.env` file in the repository root with the following values from your Twitter API account (or provide them in the `docker-compose up` command below)
     * TWITTER_API_KEY
@@ -11,7 +11,7 @@ A service that indexes tweets
     * TWITTER_ACCESS_TOKEN_SECRET
 1. Run `docker-compose up` with optional `-d`
 
-If using visual studio code, [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension and the included configuration to open the editor in container. You can then provide the environment variables in a local `.env` file and run the app in the editor.
+If using visual studio code, you can use the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension with the included configuration to open the project in a container. You can then run the app in debug mode in the editor.
 
 # Viewing data
 ## Elasticsearch

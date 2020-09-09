@@ -6,9 +6,9 @@ services:
     build: .
     depends_on:
       - "es01"
-      - "es02"
-      - "es03"
       - "mongo"
+
+    env_file: .env
 
   mongo:
     image: "mongo:3"

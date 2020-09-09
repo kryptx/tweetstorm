@@ -3,7 +3,6 @@ config:
     auth:
       APIKey: ${TWITTER_API_KEY:missing_api_key}
       APISecret: ${TWITTER_API_SECRET:missing_api_secret}
-      # twitterBearerToken: ${TWITTER_BEARER_TOKEN:missing_bearer_token}
       accessToken: ${TWITTER_ACCESS_TOKEN:missing_access_token}
       accessTokenSecret: ${TWITTER_ACCESS_TOKEN_SECRET:missing_access_token_secret}
     filterTerms:

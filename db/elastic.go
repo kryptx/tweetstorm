@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"time"
 
 	"github.com/kryptx/tweetstorm/config"
 	"github.com/olivere/elastic/v7"
@@ -15,10 +16,14 @@ func GetElasticClient(config config.ElasticConfig) *elastic.Client {
 	// Starting with elastic.v5, you must pass a context to execute each service
 	ctx := context.Background()
 
-	// Obtain a client and connect to the default Elasticsearch installation
-	// on 127.0.0.1:9200. Of course you can configure your client to connect
-	// to other hosts and configure it in various other ways.
-	client, err := elastic.NewClient(elastic.SetURL(config.URI))
+	client, err := elastic.NewClient(
+		elastic.SetURL(config.URI),
+		elastic.SetHealthcheckTimeoutStartup(60*time.Second),
+		elastic.SetRetrier(
+			elastic.NewBackoffRetrier(elastic.NewConstantBackoff(5*time.Second)),
+		),
+	)
+
 	if err != nil {
 		// Handle error
 		panic(err)

@@ -1,5 +1,5 @@
 # tweetstorm
-A service that indexes tweets
+A Golang service that streams tweets, saves in MongoDB, and indexes in ElasticSearch
 
 # Running the app
 1. Install Docker with Compose, according to the [instructions](https://docs.docker.com/compose/install/) for your operating system.

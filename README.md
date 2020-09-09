@@ -3,7 +3,7 @@ A service that indexes tweets
 
 # Running the app
 1. Install docker
-1. Update configuration as desired - e.g., select terms to send to filter API
+1. Update configuration as desired in `config.yml` - e.g., select terms to send to filter API
 1. Set up a `.env` file in the repository root with the following values from your Twitter API account (or provide them in the `docker-compose up` command below)
     * TWITTER_API_KEY
     * TWITTER_API_SECRET
